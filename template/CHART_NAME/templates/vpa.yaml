@@ -1,9 +1,4 @@
-{{- /*
-Copyright Broadcom, Inc. All Rights Reserved.
-SPDX-License-Identifier: APACHE-2.0
-*/}}
-
-{{- if and (.Capabilities.APIVersions.Has "autoscaling.k8s.io/v1/VerticalPodAutoscaler") .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.enabled }}
+{{- if and (.Capabilities.APIVersions.Has "autoscaling.k8s.io/v1/VerticalPodAutoscaler") .Values.autoscaling.vpa.enabled }}
 apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
@@ -11,33 +6,33 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
     app.kubernetes.io/component: %%COMPONENT_NAME%%
-  {{- if or .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.annotations .Values.commonAnnotations }}
-  {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.annotations .Values.commonAnnotations ) "context" . ) }}
+  {{- if or .Values.autoscaling.vpa.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.autoscaling.vpa.annotations .Values.commonAnnotations ) "context" . ) }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
   resourcePolicy:
     containerPolicies:
-    - containerName: %%MAIN_OBJECT_BLOCK%%
-      {{- with .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.controlledResources }}
+    - containerName: '%%MAIN_OBJECT_BLOCK%%'
+      {{- with .Values.autoscaling.vpa.controlledResources }}
       controlledResources:
-        {{- toYaml . | nindent 8 }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
-      {{- with .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.maxAllowed }}
+      {{- with .Values.autoscaling.vpa.maxAllowed }}
       maxAllowed:
-        {{- toYaml . | nindent 8 }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
-      {{- with .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.minAllowed }}
+      {{- with .Values.autoscaling.vpa.minAllowed }}
       minAllowed:
-        {{- toYaml . | nindent 8 }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
   targetRef:
     apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
     name: {{ include "common.names.fullname" . }}
-  {{- if .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.updatePolicy }}
+  {{- if .Values.autoscaling.vpa.updatePolicy }}
   updatePolicy:
-    {{- with .Values.%%MAIN_OBJECT_BLOCK%%.autoscaling.vpa.updatePolicy.updateMode }}
+    {{- with .Values.autoscaling.vpa.updatePolicy.updateMode }}
     updateMode: {{ . }}
     {{- end }}
   {{- end }}

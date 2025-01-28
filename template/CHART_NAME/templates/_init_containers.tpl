@@ -1,11 +1,4 @@
 {{/*
-Copyright Broadcom, Inc. All Rights Reserved.
-SPDX-License-Identifier: APACHE-2.0
-*/}}
-
-{{/* vim: set filetype=mustache: */}}
-
-{{/*
 Returns an init-container that changes the owner and group of the persistent volume(s) mountpoint(s) to 'runAsUser:fsGroup' on each node
 */}}
 {{- define "%%TEMPLATE_NAME%%.defaultInitContainers.volumePermissions" -}}

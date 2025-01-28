@@ -1,9 +1,4 @@
-{{- /*
-Copyright Broadcom, Inc. All Rights Reserved.
-SPDX-License-Identifier: APACHE-2.0
-*/}}
-
 {{- range .Values.extraDeploy }}
 ---
-{{ include "common.tplvalues.render" (dict "value" . "context" $) }}
+{{ template "common.tplvalues.render" ( dict "value" . "context" . ) }}
 {{- end }}
